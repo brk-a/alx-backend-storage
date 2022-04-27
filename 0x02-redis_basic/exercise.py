@@ -29,6 +29,18 @@ def call_history(method: Callable) -> Callable:
     return wrapper
 
 
+def count_calls(method: Callable) -> Callable:
+    """ counts how many times methods of the Cache class are called"""
+    key = method.__qualname__
+    
+    @wraps(method)
+    def wrapper(self, *args, **kwds):
+        """wrapped function that increments the key"""
+        self._redis.incr(key)
+        return method(self, *args, **kwds)
+    return wrapper
+
+
 def replay(method: Callable) -> None:
     """displays the history of calls of a particular function."""
     redis = method.__self__._redis
