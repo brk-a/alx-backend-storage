@@ -11,6 +11,24 @@ from typing import Union, Callable
 from functools import wraps
 
 
+def call_history(method: Callable) -> Callable:
+    """Calls a method that stores the history of inputs and outputs
+       for a particular function.
+    """
+    qualified_name = method.__qualname__
+    input_key = qualified_name + ":inputs"
+    output_key = qualified_name + ":outputs"
+
+    @wraps(method)
+    def wrapper(self, *args, **kwds):
+        """Stores the data in a redis db"""
+        self._redis.rpush(input_key, str(args))
+        data = method(self, *args, **kwds)
+        self._redis.rpush(output_key, str(data))
+        return data
+    return wrapper
+
+
 def replay(method: Callable) -> None:
     """displays the history of calls of a particular function."""
     redis = method.__self__._redis
