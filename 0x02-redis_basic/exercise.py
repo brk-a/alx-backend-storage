@@ -81,3 +81,16 @@ class Cache:
         if fn is not None:
             return fn(data)
         return data
+
+    def get_str(self, key: str) -> str:
+        """Parametises Cache.get to str"""
+        data = self._redis.get(key)
+        return data.decode("utf-8")
+
+    def get_int(self, key: str) -> int:
+        """Parametises Cache.get to int"""
+        try:
+            data = int(value.decode("utf-8"))
+        except Exception:
+            data = 0
+        return data
