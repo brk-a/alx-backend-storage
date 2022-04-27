@@ -26,3 +26,10 @@ class Cache:
         r_key = str(uuid4())
         self._redis.set(r_key, data)
         return r_key
+
+    def get(self, key: str, fn: Callable = None):
+        """Calls a method that Converts redis data back to desired format"""
+        data = self._redis.get(key)
+        if fn is not None:
+            return fn(data)
+        return data
