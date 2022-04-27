@@ -8,6 +8,7 @@ as a private variable and stores data in redis.
 import redis
 from uuid import uuid4
 from typing import Union, Callable
+from functools import wraps
 
 
 class Cache:
